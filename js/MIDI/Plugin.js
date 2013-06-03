@@ -32,6 +32,7 @@ var setPlugin = function(root) {
 	MIDI.noteOff = root.noteOff;
 	MIDI.chordOn = root.chordOn;
 	MIDI.chordOff = root.chordOff;
+	MIDI.stopAllNotesAllChannels = root.stopAllNotesAllChannels;
 	MIDI.stopAllNotes = root.stopAllNotes;
 	MIDI.getInput = root.getInput;
 	MIDI.getOutputs = root.getOutputs;
@@ -68,6 +69,13 @@ var setPlugin = function(root) {
 		output.send([0x80 + channel, note, 0], delay * 1000);
 	};
 
+	root.stopAllNotes = function (channel, delay) {
+		if( null === channel)
+			root.stopAllNotesAllChannels( channel);
+		else
+			output.send([0xB0 + channel, 0x7B, 0], delay * 1000);
+	};
+
 	root.chordOn = function (channel, chord, velocity, delay) {
 		for (var n = 0; n < chord.length; n ++) {
 			var note = chord[n];
@@ -82,9 +90,9 @@ var setPlugin = function(root) {
 		}
 	};
 	
-	root.stopAllNotes = function () {
+	root.stopAllNotesAllChannels = function () {
 		for (var channel = 0; channel < 16; channel ++) {
-			output.send([0xB0 + channel, 0x7B, 0]);
+			output.send([0xB0 + channel, 0x7B, 0], delay * 1000);
 		}
 	};
 
@@ -368,7 +376,14 @@ if (window.Audio) (function () {
 		}
 	};
 	
-	root.stopAllNotes = function () {
+	root.stopAllNotes = function (channel, delay) {
+		if( null === channel)
+			root.stopAllNotesAllChannels();
+		else
+			channels[channel].pause();
+	};
+
+	root.stopAllNotesAllChannels = function () {
 		for (var nid = 0, length = channels.length; nid < length; nid++) {
 			channels[nid].pause();
 		}
@@ -448,6 +463,10 @@ if (window.Audio) (function () {
 	};
 
 	root.stopAllNotes = function () {
+
+	};
+
+	root.stopAllNotesAllChannels = function () {
 
 	};
 
