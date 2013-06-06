@@ -231,6 +231,14 @@ if (window.AudioContext || window.webkitAudioContext) (function () {
 		return ret;
 	};
 
+	root.stopAllNotes = function () {
+
+	};
+
+	root.stopAllNotesAllChannels = function () {
+
+	};
+
 	root.connect = function (conf) {
 		setPlugin(root);
 		//
